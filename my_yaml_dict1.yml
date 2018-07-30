@@ -1,0 +1,10 @@
+---
+
+monday: AFI-TG
+tuesday: AFI-TG
+wednesday: Spital TG
+thursday: 
+ - AFI-TG
+ - office
+ - Spital TG
+friday: home office

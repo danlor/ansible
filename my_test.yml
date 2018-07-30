@@ -1,0 +1,40 @@
+---
+
+- name: Print hello
+  hosts: local
+  vars:
+    my_str: whatever
+    version: "Cisco IOS running version 15.2"
+  tasks:
+    - name: Hard-coded to False
+      debug:
+        msg: "Hello world is False"
+      when: False 
+
+    - name: Hard-coded to True
+      debug: 
+        msg: "Hellow world is True"
+      when: True
+
+    - name: String is whatever
+      debug:
+        msg: "Hellow world. The string is whatever."
+      when: my_str == "whatever"
+
+    - name: Testing IOS using substring in larger string
+      debug:
+        msg: Cisco IOS is verstion 15.2
+      when: "'Cisco IOS' in version"
+
+    - name: This variable is defined
+      debug:
+        msg: "Version is defined"
+      when: version is defined
+
+    - command: /bin/false
+      register: result
+      ignore_errors: True
+
+    - debug:
+        msg: "Last command seems to have failed"
+      when: result is failed

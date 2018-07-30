@@ -1,0 +1,27 @@
+---
+
+- name: uSE ios_COMMAND 
+  hosts: cisco
+  gather_facts: no
+
+  tasks:
+    - name: show the arp table
+      ios_command:
+        commands: show arp
+      register: show_arp
+
+    - debug:
+        msg: "{{ show_arp }}"
+
+    - name: create new variable 
+      set_fact:
+        show_arp_new: "{{ show_arp.stdout_lines[0] }}"
+
+    - debug:
+        msg: "{{ show_arp_new }}"
+
+    - name: class2 exercise 3c
+      debug:
+        msg: "{{ item }}"
+      with_items: "{{ show_arp_new }}"
+      when: "'10.220.88.20' in item"

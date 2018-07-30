@@ -1,0 +1,15 @@
+---
+
+- name: PRINT OUT VAR
+  hosts: cisco
+  tasks:
+    - ping:
+    - debug:
+        msg: "{{ansible_host}}"
+    - debug:
+        msg: "{{as_number}}"
+    - debug:
+        msg: "{{remote_as_number}}"
+    - debug:
+        msg: "{{ as }}"
+

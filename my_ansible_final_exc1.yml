@@ -1,0 +1,44 @@
+---
+
+- name: PING all devices
+  hosts: all
+  tasks:
+    - ping:
+
+- name: Print out hosts
+  hosts: cisco
+  tasks:
+    - debug:
+        msg: "{{ ansible_host }}"
+
+- name: print local AS-Number using group_vars
+  hosts: cisco
+  tasks:
+    - debug:
+        msg: "{{ as_number }}"
+
+- name: print remote AS-Number using host_vars
+  hosts: cisco
+  tasks:
+    - debug:
+        msg: "{{ remote_as_number }}"
+
+- name: print local playbook variables
+  # hosts is needed, even if we take no action in this play on any device !!
+  hosts: cisco
+  vars:
+    ntp_server1: 20.20.20.20
+    ntp_server2: 20.20.20.30
+  tasks:
+    - debug:
+        msg: "{{ ntp_server1 }}"
+    - debug:
+        msg: "{{ ntp_server2 }}"
+
+- name: print variables from vars_files
+  hosts: cisco
+  vars_files:
+    - my_filevars.yml
+  tasks:
+    - debug:
+        msg: "{{ spruch }}"

@@ -1,0 +1,14 @@
+---
+
+- name: Print out serial number
+  gather_facts: no
+  hosts: cisco
+  tasks:
+    - ios_facts:
+      tags: facts_only
+ 
+    - debug:
+       var: ansible_net_serialnum
+
+    - debug: 
+       msg: "SN: {{ ansible_net_serialnum }}"

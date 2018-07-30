@@ -1,0 +1,37 @@
+---
+
+- name: Arista EOS example
+  hosts: arista
+  vars:
+    ssh:
+      host: "{{ ansible_host }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_ssh_pass }}"
+      transport: cli
+      timeout: 90
+
+    eapi:
+      host: "{{ ansible_host }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_ssh_pass }}"
+      transport: eapi
+      validate_certs: no
+
+  tasks:
+    - name: SSH Facts Gathering
+      eos_facts:
+        provider: "{{ ssh }}"
+      tags: ssh
+
+    - name: EAPI Facts Gatheringi
+      eos_facts:
+        provider: "{{ eapi }}"
+      tags: eapi
+
+    - name: Execute show command
+      eos_command:
+        provider: "{{ eapi }}"
+        commands: 
+          - show version
+          - show arp
+      tags: show_cmd

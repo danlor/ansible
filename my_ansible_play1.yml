@@ -1,0 +1,10 @@
+---
+
+- name: PING localhost
+  hosts: localhost
+  tasks:
+    - ping:
+- name: PING Cisco Devices
+  hosts: cisco
+  tasks:
+    - ping:
