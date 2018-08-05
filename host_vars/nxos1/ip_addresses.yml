@@ -1,0 +1,19 @@
+---
+
+l3int:
+  - name: Ethernet2/1
+    ipv4: 10.10.10.1/30
+    state: present
+    remote_ip: 10.10.10.2
+  - name: Ethernet2/2
+    ipv4: 10.10.20.1/30
+    state: present
+    remote_ip: 10.10.20.2
+  - name: Ethernet2/3
+    ipv4: 10.10.30.1/30
+    state: present
+    remote_ip: 10.10.30.2
+  - name: Ethernet2/4
+    ipv4: 10.10.40.1/30
+    state: present
+    remote_ip: 10.10.40.2
