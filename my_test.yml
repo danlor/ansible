@@ -1,0 +1,58 @@
+---
+
+- name: Gather ios_facts
+  hosts: ceruno_dcsg_switches
+  gather_facts: no
+
+  tasks:
+    - name: Gather facts  
+      ios_facts:
+      tags:
+        - inventory
+        - interfaces
+
+    - name: hostname
+      debug:
+        msg: "Device: {{ ansible_net_hostname }}"
+      tags: inventory
+      
+    - name: Modell
+      debug:
+        msg: "Model: {{ ansible_net_model }}"
+      tags: inventory
+
+    - name: Seriennummer
+      debug:
+        msg: "SN: {{ ansible_net_serialnum }}"
+      tags: inventory
+
+    - name: Image Version
+      debug:
+        msg: "OS: {{ ansible_net_image }}"
+      tags: inventory
+
+    - name: Which interfaces are up and running
+      tags: interfaces
+      debug: 
+        msg: "Active Interface: {{ item.key }}"
+      with_dict: "{{ ansible_net_interfaces }}"
+      when: item.value.operstatus == 'up'
+                                            
+   - name: show interface description
+     tags: show_int
+     ios_command:
+       commands: show int description
+     register: show_interface_description
+
+   - name: create new variable
+     tags: show_int
+     set_fact:
+       int_des: "{{ show_interface_description.stdout_lines[0] }}"
+
+   - name: print out interfaces, which are up and running
+     tags: show_int
+     debug:
+       msg: "{{ item }}"
+     with_items: "{{ int_des }}"
+     when: "'admin down' not in item"
+

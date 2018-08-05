@@ -1,0 +1,40 @@
+---
+
+- name: GET INTERFACE CONFIG
+  hosts: ceruno_dcsg_switches
+  gather_facts: no
+  vars:
+    numblines: 10 
+  tasks:
+    - ios_facts:
+    # gather_subset: all 
+   
+    - name: run ios command
+      ios_command:
+        commands: show run interface {{ item.key }}
+        #when: "'net4' in item.key"
+      with_dict: "{{ ansible_net_interfaces }}"
+      register: output
+
+    - name: GET THE NUMBER OF INTERFACES
+      ios_command:
+        commands: show interface status
+      register: output2
+     
+    - name: CREATE NEW VARIABLE
+      set_fact:
+        int_list: "{{ output2.stdout_lines[0] }}" 
+
+    - name: PRINT OUT SHOW INT STATUS
+      debug:
+        var: int_list
+      laenge: "{{ int_list|int }}"
+
+    - name: PRINT OUT LAENGE
+      debug:
+        var: laenge
+
+    - name: PRINT OUT VARIABLE
+      debug:
+        var: output.results[{{ item }}].stdout_lines
+      with_sequence: end={{ int_list|length }} start=0
