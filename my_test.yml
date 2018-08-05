@@ -1,40 +1,59 @@
 ---
 
-- name: Print hello
-  hosts: local
-  vars:
-    my_str: whatever
-    version: "Cisco IOS running version 15.2"
+- name: Gather ios_facts
+  hosts: ceruno_dcsg_switches
+  gather_facts: no
+
   tasks:
-    - name: Hard-coded to False
-      debug:
-        msg: "Hello world is False"
-      when: False 
+    - name: Gather facts  
+      ios_facts:
+      tags:
+        - inventory
+        - interfaces
 
-    - name: Hard-coded to True
+    - name: hostname
+      debug:
+        msg: "Device: {{ ansible_net_hostname }}"
+      tags: inventory
+      
+    - name: Modell
+      debug:
+        msg: "Model: {{ ansible_net_model }}"
+      tags: inventory
+
+    - name: Seriennummer
+      debug:
+        msg: "SN: {{ ansible_net_serialnum }}"
+      tags: inventory
+
+    - name: Image Version
+      debug:
+        msg: "OS: {{ ansible_net_image }}"
+      tags: inventory
+
+    - name: Which interfaces are up and running
+      tags: interfaces
       debug: 
-        msg: "Hellow world is True"
-      when: True
+        msg: "Active Interface: {{ item.key }}"
+      with_dict: "{{ ansible_net_interfaces }}"
+      when: item.value.operstatus == 'up'
+                                            
+   - name: show interface description
+     tags: show_int
+     ios_command:
+       commands: show int description
+     register: show_interface_description
 
-    - name: String is whatever
-      debug:
-        msg: "Hellow world. The string is whatever."
-      when: my_str == "whatever"
+   - name: create new variable
+     tags: show_int
+     set_fact:
+       int_des: "{{ show_interface_description.stdout_lines[0] }}"
 
-    - name: Testing IOS using substring in larger string
-      debug:
-        msg: Cisco IOS is verstion 15.2
-      when: "'Cisco IOS' in version"
+   - name: print out interfaces, which are up and running
+     tags: show_int
+     debug:
+       msg: "{{ item }}"
+     with_items: "{{ int_des }}"
+     when: "'admin down' not in item"
 
-    - name: This variable is defined
-      debug:
-        msg: "Version is defined"
-      when: version is defined
-
-    - command: /bin/false
-      register: result
-      ignore_errors: True
-
-    - debug:
-        msg: "Last command seems to have failed"
-      when: result is failed
+>>>>>>> 57699ea3957fa7a85a98d8c18d00fa917e0f52d9
