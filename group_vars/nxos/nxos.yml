@@ -1,0 +1,45 @@
+---
+
+provider_ssh:
+  transport: cli
+  username: "{{ vault_username }}"
+  password: "{{ vault_password }}"
+
+provider_nxapi:
+  transport: nxapi
+  username: "{{ vault_username }}"
+  password: "{{ vault_password }}"
+
+  use_ssl: yes
+  validate_certs: no
+  port: 8443
+  #nxapi:
+  #  host: "{{ ansible_host }}"
+  #  transport: nxapi
+
+vlans_common:
+  - vlan_id: 301
+    admin_state: up
+    name: blue
+  - vlan_id: 302
+    admin_state: up
+    name: green
+  - vlan_id: 303
+    admin_state: up
+    name: green
+  - vlan_id: 700
+    admin_state: up
+    name: test_700
+  - vlan_id: 701
+    admin_state: up
+    name: test_701
+  - vlan_id: 702
+    admin_state: up
+    name: test_702
+  - vlan_id: 703
+    admin_state: up
+    name: test_703
+
+# use a string concatenation
+# the variable vlans will contain the vlans of both lists !!!
+vlans: "{{ vlans_common }} + {{ vlans_unique|default([]) }}"
