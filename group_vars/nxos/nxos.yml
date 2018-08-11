@@ -17,6 +17,12 @@ provider_nxapi:
   #  host: "{{ ansible_host }}"
   #  transport: nxapi
 
+global_config:
+  - "ip domain-name {{ default_domain }}"
+  - "ip name-server {{ name_server1 }} {{ name_server2     }}"
+  - "ntp server {{ ntp1 }}"
+  - "ntp server {{ ntp2 }}"
+
 vlans_common:
   - vlan_id: 301
     admin_state: up

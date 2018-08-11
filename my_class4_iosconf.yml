@@ -1,0 +1,40 @@
+---
+
+- name: IOS Config example
+  hosts: cisco
+  gather_facts: no
+
+  tasks:
+    - name: configure base
+      ios_config:
+        lines:
+          - ip domain name {{ default_domain }}
+          - ip name-server {{ name_server1 }}
+          - ip name-server {{ name_server2 }}
+          - ntp server {{ ntp1 }}
+          - ntp server {{ ntp2 }}
+          - "ip domain lookup"
+
+    - name: pointing to a source which could be a configuration file
+      ios_config:
+        src: group_vars/cisco/my_config4a.txt
+        backup: yes
+
+    - name: Configure ACL
+      ios_config:
+        # the parent argument defines that the 5 lines defined HAVE TO BE inside this parent line hierarchically
+        parents: ["ip access-list extended TEST-ACL"]
+        lines:
+          - permit ip host 1.1.1.1 any log
+          - permit ip host 3.3.3.3 any log
+          - permit ip host 2.2.2.2 any log
+          - permit ip host 4.4.4.4 any log
+          - permit ip host 5.5.5.5 any log
+        # the before arguments make sure that whenever a change is detected that you gonna first execute the before statement
+        before: [" no ip access-list extended TEST-ACL"]
+        replace: block
+        # the match-line does not care the order
+        # it's just making that these 5 entries exist in the ACL
+        # these 5 lines must exist, but there can be additional entries
+        match: line
+     

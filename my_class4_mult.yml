@@ -1,0 +1,28 @@
+---
+
+- name: IOS Config example
+  hosts: cisco
+  gather_facts: no
+  tasks:
+    - ios_config:
+        lines: "{{ global_config }}"
+  tags: cisco
+
+
+- name: EOS Config Change
+  hosts: pynet-sw5
+  gather_facts: false
+  tasks:
+    - eos_config:
+        provider: "{{ creds_eapi }}"
+        lines: "{{global_config }}"
+  tags: arista
+
+- name: NXOS Config Change
+  hosts: nxos
+  gather_facts: no
+  tasks:
+    - nxos_config:
+        provider: "{{ provider_nxapi }}"
+        lines: "{{ global_config }}"
+  tags: nxos
