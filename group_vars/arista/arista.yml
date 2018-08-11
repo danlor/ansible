@@ -22,3 +22,7 @@ global_config:
   - "ip name-server vrf default {{ name_server2 }}"
   - "ntp server {{ ntp1 }}"
   - "ntp server {{ ntp2 }}"
+  - "ip route 1.1.1.1/32 {{default_gateway }}"
+  - "ip route 1.1.1.11/32 {{default_gateway }}"
+  - "ip route 1.1.1.21/32 {{default_gateway }}"
+  - "ip route 1.1.1.31/32 {{default_gateway }}"

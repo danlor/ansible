@@ -6,3 +6,4 @@
  name_server3: 1.1.1.1 
  ntp1: 130.126.24.24
  ntp2: 152.2.21.1
+ default_gateway: 10.220.88.1

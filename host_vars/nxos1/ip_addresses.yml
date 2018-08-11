@@ -1,5 +1,6 @@
 ---
 
+loopback: 1.1.1.111/32
 l3int:
   - name: Ethernet2/1
     ipv4: 10.10.10.1/30

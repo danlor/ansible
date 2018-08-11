@@ -6,16 +6,68 @@
   tasks:
     - ios_config:
         lines: "{{ global_config }}"
+ #     notify: write ios
+ 
+    - ios_config:
+        parents: "interface loopback 1"
+        lines:
+          - "ip address {{ loopback }}"
+        match: line
+      when: "ansible_host == 'cisco1.twb-tech.com'"
+ #     notify: write ios
+
+ # handlers:
+ #   -name: write ios
+ #    ios_config:
+ #      backup: yes
+
   tags: cisco
 
 
 - name: EOS Config Change
-  hosts: pynet-sw5
+  hosts: arista 
   gather_facts: false
   tasks:
-    - eos_config:
+    - name: configure global config
+      eos_config:
         provider: "{{ creds_eapi }}"
         lines: "{{global_config }}"
+      notify: write eos
+      tags: global
+
+    - name: configure loopback
+      eos_config:
+        provider: "{{ creds_eapi }}"
+        parents: "interface loopback 1"
+        lines:
+          - "ip address {{ loopback }}"
+        match: line
+      when: "ansible_host == 'arista5.twb-tech.com'"
+      notify: write eos
+
+    - name: configure vlans
+      eos_config:
+        provider: "{{ creds_eapi }}"
+        # make sure vlans are configured
+        parents: "vlan {{ item.vlan_id }}"
+        lines:
+          - "name {{ item.vlan_name }}"
+      with_items:
+        - { vlan_id: 200, vlan_name: VL200 }
+        - { vlan_id: 201, vlan_name: VL201 }
+        - { vlan_id: 202, vlan_name: VL202 }
+        - { vlan_id: 203, vlan_name: VL203 }
+        - { vlan_id: 204, vlan_name: VL204 }
+      tags: vlan
+      notify: write eos
+
+  handlers:
+  # Backup configuration if change happened
+    - name: write eos
+      eos_config:
+        provider: "{{ creds_eapi }}"
+        backup: yes
+ 
   tags: arista
 
 - name: NXOS Config Change
@@ -25,4 +77,21 @@
     - nxos_config:
         provider: "{{ provider_nxapi }}"
         lines: "{{ global_config }}"
+      notify: write nxos
+
+    - name: configure loopback
+      nxos_config:
+        provider: "{{ provider_nxapi }}"
+        parents: "interface Loopback 1"
+        lines:
+          - "ip address {{ loopback }}"
+      when: "ansible_host == 'nxos1.twb-tech.com'"
+      notify: write nxos
+
+  handlers:
+    - name: write nxos
+      nxos_config:
+        provider: "{{ provider_nxapi }}"
+        backup: yes
+
   tags: nxos
